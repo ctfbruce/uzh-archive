@@ -1,0 +1,22 @@
+
+{% load static %}
+
+{% block title %}Documents{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h2>Available Documents</h2>
+    <div class="documents-container">
+        {% for doc in documents %}
+            <div class="document" id="document-{{ doc.id }}">
+                <h3>{{ doc.title }}</h3>
+                <p>{{ doc.description }}</p>
+                <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
+                {% include 'partials/vote_buttons.html' with document=doc %}
+            </div>
+        {% empty %}
+            <p>No documents available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

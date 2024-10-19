@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="approve-container">
+    <h2>Approve Documents</h2>
+    {% if pending_docs %}
+        <ul class="document-list">
+            {% for doc in pending_docs %}
+                <li class="document-item">
+                    <p><strong>{{ doc.subject.name }}</strong> - {{ doc.year }} {{ doc.semester }} - {{ doc.get_type_display }}</p>
+                    <p>Uploaded by: 
+                        {% if doc.uploaded_by %}
+                            {{ doc.uploaded_by.email }}
+                        {% else %}
+                            {{ doc.uploaded_by_email }}
+                        {% endif %}
+                    </p>
+                    <a href="{{ doc.file.url }}" class="btn download-btn">View Document</a>
+                    <div class="action-buttons">
+                        <form method="post" action="{% url 'approve_document' doc.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn approve-btn">Approve</button>
+                        </form>
+                        <form method="post" action="{% url 'reject_document' doc.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn reject-btn">Reject</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents pending approval.</p>
+    {% endif %}
+</div>
+{% endblock %}

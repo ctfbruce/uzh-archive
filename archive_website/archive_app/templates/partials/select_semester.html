@@ -1,0 +1,15 @@
+<!-- partials/select_semester.html -->
+
+<div id="selection-container">
+    <h3>Select Semester</h3>
+    <div class="grid-container">
+        {% for semester in semesters %}
+            <div class="grid-item">
+                <button class="btn semester-btn" hx-get="{% url 'display_documents' %}?subject_id={{ subject_id }}&doc_type={{ doc_type }}&year={{ year }}&semester={{ semester }}" hx-target="#selection-container" hx-swap="outerHTML">
+                    {{ semester }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="btn back-btn" hx-get="{% url 'select_year' %}?subject_id={{ subject_id }}&doc_type={{ doc_type }}" hx-target="#selection-container" hx-swap="outerHTML">Back</button>
+</div>

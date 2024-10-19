@@ -1,0 +1,14 @@
+<!-- partials/select_subject.html -->
+
+<div id="selection-container">
+    <h3>Select Subject</h3>
+    <div class="grid-container">
+        {% for subject in subjects %}
+            <div class="grid-item">
+                <button class="btn subject-btn" hx-get="{% url 'select_document_type' %}?subject_id={{ subject.id }}" hx-target="#selection-container" hx-swap="outerHTML">
+                    {{ subject.name }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+</div>

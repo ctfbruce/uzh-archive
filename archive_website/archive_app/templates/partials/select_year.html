@@ -1,0 +1,15 @@
+<!-- partials/select_year.html -->
+
+<div id="selection-container">
+    <h3>Select Year</h3>
+    <div class="grid-container">
+        {% for year in years %}
+            <div class="grid-item">
+                <button class="btn year-btn" hx-get="{% url 'select_semester' %}?subject_id={{ subject_id }}&doc_type={{ doc_type }}&year={{ year }}" hx-target="#selection-container" hx-swap="outerHTML">
+                    {{ year }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    <button class="btn back-btn" hx-get="{% url 'select_document_type' %}?subject_id={{ subject_id }}" hx-target="#selection-container" hx-swap="outerHTML">Back</button>
+</div>

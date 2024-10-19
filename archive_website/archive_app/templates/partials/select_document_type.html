@@ -1,0 +1,33 @@
+<!-- partials/select_document_type.html -->
+
+<div id="selection-container">
+    <h3>Select Document Type</h3>
+    <div class="grid-container">
+        
+        <div class="grid-item">
+            <button class="btn type-btn" hx-get="{% url 'select_year' %}?subject_id={{ subject_id }}&doc_type=past_exam" hx-target="#selection-container" hx-swap="outerHTML">
+                Exam Preparation
+            </button>
+        </div>
+
+        <div class="grid-item">
+            <button class="btn type-btn" hx-get="{% url 'select_year' %}?subject_id={{ subject_id }}&doc_type=summary" hx-target="#selection-container" hx-swap="outerHTML">
+                Summaries & Questionbanks
+            </button>
+        </div>
+
+        <div class="grid-item">
+            <button class="btn type-btn" hx-get="{% url 'select_year' %}?subject_id={{ subject_id }}&doc_type=question_bank" hx-target="#selection-container" hx-swap="outerHTML">
+                Questionbanks
+            </button>
+        </div>
+
+        <div class="grid-item">
+            <button class="btn type-btn" hx-get="{% url 'select_year' %}?subject_id={{ subject_id }}&doc_type=other" hx-target="#selection-container" hx-swap="outerHTML">
+                Other
+            </button>
+        </div>
+
+    </div>
+    <button class="btn back-btn" hx-get="{% url 'select_subject' %}" hx-target="#selection-container" hx-swap="outerHTML">Back</button>
+</div>

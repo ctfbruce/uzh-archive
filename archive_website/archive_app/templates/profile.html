@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Your Profile</h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Verified:</strong> {{ user.is_verified }}</p>
+    <p><strong>Moderator:</strong> {{ user.is_moderator }}</p>
+    <p><strong>Upvotes Received:</strong> {{ total_upvotes }}</p>
+    
+    <h3>Your Uploaded Documents</h3>
+    {% if user.uploaded_documents.all %}
+        <ul class="document-list">
+            {% for doc in user.uploaded_documents.all %}
+                <li class="document-item">
+                    <p>{{ doc.subject.name }} - {{ doc.year }} {{ doc.semester }} - {{ doc.get_type_display }}</p>
+                    <p>Upvotes: {{ doc.upvote_count }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't uploaded any documents yet.</p>
+    {% endif %}
+    
+    <form method="post" action="{% url 'delete_profile' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn delete-btn">Delete Profile</button>
+    </form>
+</div>
+{% endblock %}

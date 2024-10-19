@@ -1,0 +1,17 @@
+<!-- partials/vote_buttons.html -->
+<div class="vote-buttons">
+    <button class="btn upvote-btn"
+            hx-post="{% url 'upvote_document' document.id %}"
+            hx-trigger="click"
+            hx-target="#document-{{ document.id }} .vote-buttons"
+            hx-swap="outerHTML">
+        Upvote ({{ document.upvotes.count }})
+    </button>
+    <button class="btn downvote-btn"
+            hx-post="{% url 'downvote_document' document.id %}"
+            hx-trigger="click"
+            hx-target="#document-{{ document.id }} .vote-buttons"
+            hx-swap="outerHTML">
+        Downvote ({{ document.downvotes.count }})
+    </button>
+</div>
