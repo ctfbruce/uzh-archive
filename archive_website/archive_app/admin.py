@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Subject, Tag, Document
+from .models import User, Subject, Tag, Document, Verification_Code
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -31,3 +31,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Subject)
 admin.site.register(Tag)
 admin.site.register(Document)
+admin.site.register(Verification_Code)

@@ -6,6 +6,9 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.conf import settings
 from .managers import DocumentManager, UserManager
+from datetime import timedelta
+from django.utils import timezone
+from .utils import send_verification_email
 
 class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
@@ -34,6 +37,20 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Verification_Code(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, on_delete=models.CASCADE,related_name='verification_code')
+    expires_by = models.DateTimeField(default=timezone.now() + timedelta(minutes=5))
+    code = models.CharField(max_length=20)
+
+    def is_valid(self):
+        return timezone.now() < self.expires_by
+
+    def __str__(self):
+        return f'{self.user.email} - {self.code}'
+    
+    
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
@@ -87,7 +104,7 @@ class Document(models.Model):
         blank=True,
     )
     verified_by_email = models.EmailField(null=True, blank=True)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='documents')
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, related_name='documents', null=True)
     file = models.FileField(upload_to=user_directory_path)
     upvotes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='upvoted_documents', blank=True)
     description = models.TextField(blank=True, null=True)

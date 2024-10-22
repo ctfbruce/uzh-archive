@@ -6,9 +6,75 @@
 <div class="home-container">
     <h2>Find Documents</h2>
     <div class="search-container">
-        <div id="selection-container" hx-get="{% url 'select_subject' %}" hx-trigger="load" hx-target="#selection-container" hx-swap="outerHTML">
-            <!-- Initial content will be loaded via HTMX -->
+        <div id="selection-container">
+            <h3>Select Subject</h3>
+            
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="subject-search" placeholder="Search for a subject..." aria-label="Search Subjects">
+            </div>
+            
+            <div class="grid-container">
+                {% for subject in subjects %}
+                    <div class="grid-item">
+                        <button class="btn subject-btn" data-subject-name="{{ subject.name }}" hx-get="{% url 'select_document_type' %}?subject_id={{ subject.id }}" hx-target="#selection-container" hx-swap="outerHTML">
+                            {{ subject.name }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('subject-search');
+        const subjectButtons = document.querySelectorAll('.subject-btn');
+
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+
+            subjectButtons.forEach(function(button) {
+                const subjectName = button.getAttribute('data-subject-name').toLowerCase();
+                if (subjectName.includes(query)) {
+                    button.parentElement.style.display = 'block';
+                } else {
+                    button.parentElement.style.display = 'none';
+                }
+            });
+
+            // Optional: Display a message if no subjects match the search
+            displayNoResultsMessage();
+        });
+
+        function displayNoResultsMessage() {
+            const gridContainer = document.querySelector('.grid-container');
+            const visibleButtons = Array.from(subjectButtons).filter(button => {
+                return button.parentElement.style.display !== 'none';
+            });
+
+            // Check if no buttons are visible
+            if (visibleButtons.length === 0) {
+                if (!document.getElementById('no-results')) {
+                    const noResultsDiv = document.createElement('div');
+                    noResultsDiv.id = 'no-results';
+                    noResultsDiv.textContent = 'No subjects found.';
+                    noResultsDiv.style.gridColumn = '1 / -1';
+                    noResultsDiv.style.textAlign = 'center';
+                    noResultsDiv.style.fontStyle = 'italic';
+                    noResultsDiv.style.color = '#666';
+                    gridContainer.appendChild(noResultsDiv);
+                }
+            } else {
+                const noResultsDiv = document.getElementById('no-results');
+                if (noResultsDiv) {
+                    noResultsDiv.remove();
+                }
+            }
+        }
+    });
+</script>
+
+
 {% endblock %}

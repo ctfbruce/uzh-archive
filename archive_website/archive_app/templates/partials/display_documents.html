@@ -1,22 +1,73 @@
-
-{% load static %}
-
-{% block title %}Documents{% endblock %}
-
 {% block content %}
-<div class="home-container">
+<div class="selection-container" id="selection-container">
     <h2>Available Documents</h2>
     <div class="documents-container">
-        {% for doc in documents %}
-            <div class="document" id="document-{{ doc.id }}">
-                <h3>{{ doc.title }}</h3>
-                <p>{{ doc.description }}</p>
-                <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
-                {% include 'partials/vote_buttons.html' with document=doc %}
+        {% if doc_type == "past_exam" %}
+            <!-- Left Column: Past Exams -->
+            <div class="document-column left-column">
+                <h3>Past Exams</h3>
+                {% for doc in documents %}
+                    {% if doc.type == "past_exam" %}
+                        <div class="document" id="document-{{ doc.id }}">
+                            <h4>{{ doc.title }}</h4>
+                            <p>{{ doc.description }}</p>
+                            <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
+                            {% include 'partials/vote_buttons.html' with document=doc %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-        {% empty %}
-            <p>No documents available.</p>
-        {% endfor %}
+
+            <!-- Right Column: Exam Solutions -->
+            <div class="document-column right-column">
+                <h3>Exam Solutions</h3>
+                {% for doc in documents %}
+                    {% if doc.type == "exam_solution" %}
+                        <div class="document" id="document-{{ doc.id }}">
+                            <h4>{{ doc.title }}</h4>
+                            <p>{{ doc.description }}</p>
+                            <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
+                            {% include 'partials/vote_buttons.html' with document=doc %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Left Column: Summaries -->
+            <div class="document-column left-column">
+                <h3>Summaries</h3>
+                {% for doc in documents %}
+                    {% if doc.type == "summary" %}
+                        <div class="document" id="document-{{ doc.id }}">
+                            <h4>{{ doc.title }}</h4>
+                            <p>{{ doc.description }}</p>
+                            <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
+                            {% include 'partials/vote_buttons.html' with document=doc %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Right Column: Other Documents -->
+            <div class="document-column right-column">
+                <h3>Other Documents</h3>
+                {% for doc in documents %}
+                    {% if doc.type != "summary" %}
+                        <div class="document" id="document-{{ doc.id }}">
+                            <h4>{{ doc.title }}</h4>
+                            <p>{{ doc.description }}</p>
+                            <a href="{{ doc.download_url }}" class="btn download-btn">Download</a>
+                            {% include 'partials/vote_buttons.html' with document=doc %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
     </div>
+    <button class="btn back-btn" hx-get="{% url 'select_semester' %}?subject_id={{ subject_id }}&doc_type={{ doc_type }}&year={{ year }}" hx-target="#selection-container" hx-swap="outerHTML">
+
 </div>
+
 {% endblock %}

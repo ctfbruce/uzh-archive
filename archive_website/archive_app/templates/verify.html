@@ -1,0 +1,30 @@
+<!-- archive_app/templates/verify.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="home-container">
+        <h2>Verify Your Email</h2>
+
+        <!-- Display Messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Verification Form -->
+        <div class="verification-form">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Verify</button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

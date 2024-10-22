@@ -6,16 +6,17 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import reverse
 from django_htmx.http import HttpResponseClientRedirect
-from .forms import UserCreationForm, UploadDocumentForm
-from .models import Document, Subject, Tag
+from .forms import UserCreationForm, UploadDocumentForm, VerificationForm
+from .models import Document, Subject, Tag, Verification_Code
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Q
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.authentication import TokenAuthentication
-
-
+from .utils import generate_verification_code
+from django.utils import timezone
+from django.contrib import messages
 
 def is_verified(user):
     return user.is_verified
@@ -29,11 +30,46 @@ def register(request):
         if form.is_valid():
             user = form.save()
             # Send verification email logic here
+            
+            verification_code = Verification_Code.objects.create(user=user, code = generate_verification_code())
+            verification_code.save()
+            
             login(request, user)
-            return redirect('home')
+            return redirect('verify_email')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
+
+@login_required
+def verify_code(request):
+    """
+    need to add all the necessary feedbacks for if the request is not post, if the user is already verified, is there was no provided code, if the code was wrong, if the verification went well
+    """
+    if request.method == "POST":
+        user = request.user
+        if not user.is_verified:
+            
+            if request.POST.get("verification_code"):
+                valid_code = user.verification_code.filter(code = request.POST.get("verification_code"),
+                                                           expires_by__gt=timezone.now()).first()
+            
+                if valid_code:
+                    user.is_verified = True
+                    user.save()
+                    valid_code.delete()
+                    messages.success(request, "Your email has been verified successfully!")
+
+                    return redirect("home")
+                else:
+                    messages.error(request, "Invalid or expired verification code.")
+                    return render(request, "verify.html")
+        else:
+            messages.info(request, "Your email is already verified.")
+
+            return redirect("home")              
+    else:
+        form = VerificationForm()
+        return render(request, "verify.html", {'form': form})
 
 
 def user_login(request):
@@ -67,12 +103,10 @@ def home(request):
 
 @login_required
 def verification_required(request):
-    return render(request, 'verification_required.html')
+    return redirect("verify_email")
 
 @login_required
 def profile(request):
-    if not request.user.is_verified:
-        return redirect('verification_required')
     
     
     total_upvotes = request.user.uploaded_documents.aggregate(total_upvotes=Count('upvotes'))['total_upvotes']
@@ -88,6 +122,7 @@ def delete_profile(request):
         # Get the currently logged-in user
         user = request.user
 
+    
         # Log out the user before deleting the profile
         logout(request)
 

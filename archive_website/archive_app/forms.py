@@ -53,3 +53,6 @@ class UploadDocumentForm(forms.ModelForm):
             return file
         else:
             raise forms.ValidationError("Couldn't read uploaded file")
+
+class VerificationForm(forms.Form):
+    verification_code = forms.CharField(max_length=20, required=True, label="Verification Code")

@@ -1,0 +1,8 @@
+media/*
+
+# Keep the media folder
+!media/.gitkeep
+
+.env
+
+test.py

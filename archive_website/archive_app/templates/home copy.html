@@ -1,0 +1,14 @@
+<!-- home.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="home-container">
+    <h2>Find Documents</h2>
+    <div class="search-container">
+        <div id="selection-container" hx-get="{% url 'select_subject' %}" hx-trigger="load" hx-target="#selection-container" hx-swap="outerHTML">
+            <!-- Initial content will be loaded via HTMX -->
+        </div>
+    </div>
+</div>
+{% endblock %}
