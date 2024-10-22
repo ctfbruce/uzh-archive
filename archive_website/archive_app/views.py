@@ -147,8 +147,8 @@ def upload_document(request):
             document.uploaded_by = request.user
             document.save()
             return render(request, 'upload_success.html')
-        else:
-            form = UploadDocumentForm()
+    else:
+        form = UploadDocumentForm()
     return render(request, 'upload_document.html', {'form': form})
 
 
